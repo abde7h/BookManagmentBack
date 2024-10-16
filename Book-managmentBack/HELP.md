@@ -15,7 +15,7 @@ Este proyecto es una API de gestión de libros desarrollada con **Spring Boot**.
 - Java 17+
 - Spring Boot 3.x
 - Maven
-- Base de datos H2 (o cualquier otra compatible con JPA)
+- Base de datos Mysql
 
 ## Configuración
 
@@ -35,7 +35,7 @@ Las dependencias clave utilizadas en el proyecto incluyen:
 - **Spring Boot Starter Security**: Para la autenticación y autorización.
 - **Spring Boot Starter JPA**: Para interactuar con la base de datos.
 - **JWT (io.jsonwebtoken)**: Para la generación y validación de tokens.
-- **H2 Database**: Base de datos en memoria utilizada para pruebas.
+- **Mysql Driver**: Para la correcta funcionalidad de la base de datos. 
 
 ## Endpoints de la API
 
@@ -105,7 +105,7 @@ Para ejecutar la aplicación localmente:
    mvn spring-boot:run
    ```
 
-La API estará disponible en `http://localhost:8080`.
+La API estará disponible en `http://localhost:8081`. (Puedes canbiar el puerto en application.properties así como el username y password para usar tu bbdd)
 
 ## Notas adicionales
 
