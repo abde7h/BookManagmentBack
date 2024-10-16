@@ -1,35 +1,115 @@
-# Getting Started
+# Book Management API
 
-### Reference Documentation
+Este proyecto es una API de gestión de libros desarrollada con **Spring Boot**. La aplicación permite a los usuarios autenticarse, registrar cuentas, gestionar sus libros favoritos, y proteger las rutas usando **JWT (JSON Web Token)** para la autenticación.
 
-For further reference, please consider the following sections:
+## Características
 
-* [Official Apache Maven documentation](https://maven.apache.org/guides/index.html)
-* [Spring Boot Maven Plugin Reference Guide](https://docs.spring.io/spring-boot/3.3.4/maven-plugin)
-* [Create an OCI image](https://docs.spring.io/spring-boot/3.3.4/maven-plugin/build-image.html)
-* [Spring Data JPA](https://docs.spring.io/spring-boot/docs/3.3.4/reference/htmlsingle/index.html#data.sql.jpa-and-spring-data)
-* [Spring Boot DevTools](https://docs.spring.io/spring-boot/docs/3.3.4/reference/htmlsingle/index.html#using.devtools)
-* [Spring Security](https://docs.spring.io/spring-boot/docs/3.3.4/reference/htmlsingle/index.html#web.security)
-* [Spring Web](https://docs.spring.io/spring-boot/docs/3.3.4/reference/htmlsingle/index.html#web)
+- Autenticación de usuarios con **JWT**.
+- Registro y login de usuarios.
+- Gestión de libros favoritos para cada usuario autenticado.
+- Seguridad de rutas con **Spring Security**.
+- Soporte para **CORS** para permitir el frontend alojado en `http://localhost:5173`.
 
-### Guides
+## Requisitos
 
-The following guides illustrate how to use some features concretely:
+- Java 17+
+- Spring Boot 3.x
+- Maven
+- Base de datos H2 (o cualquier otra compatible con JPA)
 
-* [Accessing Data with JPA](https://spring.io/guides/gs/accessing-data-jpa/)
-* [Accessing data with MySQL](https://spring.io/guides/gs/accessing-data-mysql/)
-* [Securing a Web Application](https://spring.io/guides/gs/securing-web/)
-* [Spring Boot and OAuth2](https://spring.io/guides/tutorials/spring-boot-oauth2/)
-* [Authenticating a User with LDAP](https://spring.io/guides/gs/authenticating-ldap/)
-* [Building a RESTful Web Service](https://spring.io/guides/gs/rest-service/)
-* [Serving Web Content with Spring MVC](https://spring.io/guides/gs/serving-web-content/)
-* [Building REST services with Spring](https://spring.io/guides/tutorials/rest/)
+## Configuración
 
-### Maven Parent overrides
+### Variables de entorno
+Configura las siguientes variables de entorno en tu archivo `application.properties` o `application.yml`:
 
-Due to Maven's design, elements are inherited from the parent POM to the project POM.
-While most of the inheritance is fine, it also inherits unwanted elements like `<license>` and `<developers>` from the
-parent.
-To prevent this, the project POM contains empty overrides for these elements.
-If you manually switch to a different parent and actually want the inheritance, you need to remove those overrides.
+```properties
+jwt.secret=TuClaveSecretaJWT
+jwt.expirationTime=86400000 # Tiempo en milisegundos (1 día)
+```
+
+### Dependencias principales
+
+Las dependencias clave utilizadas en el proyecto incluyen:
+
+- **Spring Boot Starter Web**: Para crear la API REST.
+- **Spring Boot Starter Security**: Para la autenticación y autorización.
+- **Spring Boot Starter JPA**: Para interactuar con la base de datos.
+- **JWT (io.jsonwebtoken)**: Para la generación y validación de tokens.
+- **H2 Database**: Base de datos en memoria utilizada para pruebas.
+
+## Endpoints de la API
+
+### Autenticación
+
+- **POST /auth/register**: Registrar un nuevo usuario.
+    - Request body:
+      ```json
+      {
+        "username": "nuevoUsuario",
+        "password": "contraseñaSegura"
+      }
+      ```
+
+- **POST /auth/login**: Autenticar un usuario y obtener un token JWT.
+    - Request body:
+      ```json
+      {
+        "username": "nombreUsuario",
+        "password": "contraseña"
+      }
+      ```
+
+    - Respuesta exitosa:
+      ```json
+      {
+        "token": "token_jwt_generado"
+      }
+      ```
+
+### Libros
+
+- **GET /books/favorites**: Obtener los libros favoritos del usuario autenticado.
+    - Requiere autenticación con un token JWT en el encabezado `Authorization`:
+      ```
+      Authorization: Bearer <token_jwt>
+      ```
+
+- **POST /books/favorites**: Añadir un nuevo libro a los favoritos del usuario.
+    - Requiere autenticación con JWT.
+    - Request body:
+      ```json
+      {
+        "title": "Nombre del libro",
+        "author": "Autor del libro"
+      }
+      ```
+
+## Seguridad
+
+La aplicación utiliza **Spring Security** para proteger las rutas y **JWT** para la autenticación. Solo las rutas `/auth/**` están abiertas sin autenticación. Todas las demás rutas requieren un token válido.
+
+El filtro **JWTFilter** intercepta las solicitudes y verifica la validez del token JWT antes de permitir el acceso a las rutas protegidas.
+
+## Ejecución
+
+Para ejecutar la aplicación localmente:
+
+1. Clona el repositorio:
+   ```bash
+   git clone https://github.com/abde7h/BookManagementBackend.git
+   cd BookManagementBackend
+   ```
+
+2. Ejecuta la aplicación con Maven:
+   ```bash
+   mvn spring-boot:run
+   ```
+
+La API estará disponible en `http://localhost:8080`.
+
+## Notas adicionales
+
+- El proyecto ya incluye la configuración básica de **CORS** para permitir solicitudes desde `http://localhost:5173`, que puede ser útil para un frontend desarrollado con herramientas como **Vite** o **React**.
+- La autenticación se basa en la implementación de **Spring Security** y un sistema de tokens JWT para gestionar las sesiones sin estado.
+
 
